@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../P7-Dev-Web-livres/.idea/P7-Dev-Web-livres.iml" filepath="$PROJECT_DIR$/../P7-Dev-Web-livres/.idea/P7-Dev-Web-livres.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/openclassrooms-mon-vieux-grimoire.iml" filepath="$PROJECT_DIR$/.idea/openclassrooms-mon-vieux-grimoire.iml" />
+    </modules>
+  </component>
+</project>
