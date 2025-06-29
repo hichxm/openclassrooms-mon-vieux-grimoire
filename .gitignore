@@ -1,7 +1,8 @@
 ### Custom logs
-uploads/*
-
 .env
+public/images/books/*.jpg
+tmp/
+!tmp/.gitkeep
 
 ### Node template
 # Logs
