@@ -7,9 +7,17 @@ const path = require("node:path");
 
 const multer = require('multer');
 const crypto = require("crypto");
+const fs = require("node:fs");
+
 const multerStorage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, tmpUploadsPath())
+        const _tmpUploadsPath = tmpUploadsPath()
+
+        // If the tmp upload path does not exist, create a directory
+        if(!fs.existsSync(_tmpUploadsPath))
+            fs.mkdirSync(_tmpUploadsPath)
+
+        cb(null, _tmpUploadsPath)
     },
     filename: function (req, file, cb) {
         cb(
