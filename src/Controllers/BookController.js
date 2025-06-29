@@ -31,6 +31,12 @@ exports.getBook = async (req, res) => {
     return res.status(200).json(book)
 }
 
+exports.getBooksBestRating = async (req, res) => {
+    const books = await Book.find().sort({averageRating: -1}).limit(3)
+
+    return res.status(200).json(books)
+}
+
 exports.storeBook = async (req, res) => {
     // Store image and convert to JPEG
     const imagePath = await convertImageToJPEG(req.file.path)
