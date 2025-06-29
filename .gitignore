@@ -1,6 +1,7 @@
 ### Custom logs
 .env
 public/images/books/*.jpg
+public/images/books/*.jpeg
 tmp/
 !tmp/.gitkeep
 

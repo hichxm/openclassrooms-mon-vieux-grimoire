@@ -3,12 +3,12 @@ const path = require('path');
 const {imagesBookPath} = require("../helper");
 const sharp = require('sharp');
 
-const convertImageToJPG = async (imagePath) => {
+const convertImageToJPEG = async (imagePath) => {
     const basenameImagePath = path.basename(imagePath)
     const extensionImagePath = path.extname(imagePath)
 
     const publicImagePath = imagesBookPath(
-        basenameImagePath.replace(extensionImagePath, '.jpg')
+        basenameImagePath.replace(extensionImagePath, '.jpeg')
     );
 
     await sharp(imagePath)
@@ -26,9 +26,8 @@ exports.getBooks = async (req, res) => {
 }
 
 exports.storeBook = async (req, res) => {
-    // Store image
-    // console.log(req.file)
-    const imagePath = await convertImageToJPG(req.file.path)
+    // Store image and convert to JPEG
+    const imagePath = await convertImageToJPEG(req.file.path)
 
     console.log(imagePath)
 
