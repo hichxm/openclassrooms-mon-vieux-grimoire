@@ -38,6 +38,8 @@ router.post('/auth/signup', AuthController.createUser)
 router.post('/auth/login', AuthController.loginUser)
 
 router.get('/books', BookController.getBooks)
+router.get('/books/:id', BookController.getBook)
+
 router.post('/books', upload.single('image'), BookController.storeBook)
 
 module.exports = router;

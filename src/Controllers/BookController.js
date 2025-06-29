@@ -25,6 +25,12 @@ exports.getBooks = async (req, res) => {
     return res.status(200).json(books)
 }
 
+exports.getBook = async (req, res) => {
+    const book = await Book.findById(req.params.id)
+
+    return res.status(200).json(book)
+}
+
 exports.storeBook = async (req, res) => {
     // Store image and convert to JPEG
     const imagePath = await convertImageToJPEG(req.file.path)
