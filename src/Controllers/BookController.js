@@ -29,8 +29,25 @@ exports.storeBook = async (req, res) => {
     // Store image and convert to JPEG
     const imagePath = await convertImageToJPEG(req.file.path)
 
-    console.log(imagePath)
+    const reqBookParsed = JSON.parse(req.body.book)
 
-    // const book = new Book(JSON.parse(req.body.book))
+    const book = new Book({
+        userId: reqBookParsed.userId,
+        title: reqBookParsed.title,
+        author: reqBookParsed.author,
+        imageLocalPath: imagePath,
+        year: reqBookParsed.year,
+        genre: reqBookParsed.genre,
+        ratings: reqBookParsed.ratings,
+    })
 
+    try {
+        await book.save()
+
+        res.status(201).json({message: 'Book created successfully'})
+    } catch (error) {
+        console.error(error)
+
+        res.status(400).json({message: 'Failed to create book'})
+    }
 }

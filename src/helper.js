@@ -1,4 +1,5 @@
 const path = require('node:path')
+const URL = require('node:url')
 
 exports.rootPath = (...customPath) => {
     return path.join(__dirname, '..', ...customPath);
@@ -26,4 +27,22 @@ exports.imagesPath = (...customPath) => {
 
 exports.imagesBookPath = (...customPath) => {
     return exports.imagesPath('books', ...customPath);
+}
+
+exports.publicURL = (...customPath) => {
+    const mainUrl = new URL.URL(process.env.PUBLIC_URL);
+
+    mainUrl.pathname = customPath
+        .map(path => path.trim('/'))
+        .join('/');
+
+    return new URL.URL(mainUrl).toString();
+}
+
+exports.publicImagesURL = (...customPath) => {
+    return exports.publicURL('images', ...customPath);
+}
+
+exports.publicImagesBookURL = (...customPath) => {
+    return exports.publicImagesURL('books', ...customPath);
 }
