@@ -45,6 +45,7 @@ exports.storeBook = async (req, res) => {
         year: reqBookParsed.year,
         genre: reqBookParsed.genre,
         ratings: reqBookParsed.ratings,
+        averageRating: reqBookParsed.averageRating,
     })
 
     try {

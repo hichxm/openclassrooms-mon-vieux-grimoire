@@ -14,14 +14,10 @@ const bookSchema = mongoose.Schema({
             grade: {type: Number, required: true}
         }
     ],
+    averageRating: {type: Number, required: true},
 }, {
     toJSON: {virtuals: true},
     toObject: {virtuals: true}
-})
-
-bookSchema.virtual('averageRating').get(function () {
-    return this.ratings
-        .reduce((acc, rating) => acc + rating.grade, 0) / this.ratings.length || 0;
 })
 
 bookSchema.virtual('imageUrl').get(function () {
