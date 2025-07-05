@@ -35,7 +35,8 @@ const convertImageToJPEG = async (imagePath) => {
 }
 
 const calculateAverageRating = (ratings) => {
-    return ratings.reduce((acc, rating) => acc + rating.grade, 0) / ratings.length
+    return (ratings.reduce((acc, rating) => acc + rating.grade, 0) / ratings.length)
+        .toFixed(0)
 }
 
 exports.getBooks = async (req, res) => {
