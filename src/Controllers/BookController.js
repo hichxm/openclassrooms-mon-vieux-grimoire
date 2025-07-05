@@ -35,7 +35,7 @@ const convertImageToJPEG = async (imagePath) => {
 }
 
 const calculateAverageRating = (ratings) => {
-    return ratings.reduce((acc, rating) => acc + rating.grade, 0) / ratings.length;
+    return ratings.reduce((acc, rating) => acc + rating.grade, 0) / ratings.length
 }
 
 exports.getBooks = async (req, res) => {
@@ -63,7 +63,7 @@ exports.storeBook = async (req, res) => {
     const reqBookParsed = JSON.parse(req.body.book)
 
     const book = new Book({
-        userId: reqBookParsed.userId,
+        userId: req.user.userId,
         title: reqBookParsed.title,
         author: reqBookParsed.author,
         imageLocalPath: imagePath,
