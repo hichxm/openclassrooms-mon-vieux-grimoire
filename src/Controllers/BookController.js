@@ -85,8 +85,14 @@ exports.storeBook = async (req, res) => {
 }
 
 exports.updateBook = async (req, res) => {
-    // const userIdFromToken = ;
-    const book = await Book.findById(req.params.id)
+    const book = await Book.findOne({
+        _id: req.params.id,
+        userId: req.user.userId,
+    })
+
+    if(!book) {
+        return res.status(404).json({message: 'Book not found'})
+    }
 
     let imageLocalPath = book.imageLocalPath
     let reqBookParsed = {}
@@ -129,7 +135,14 @@ exports.updateBook = async (req, res) => {
 
 exports.deleteBook = async (req, res) => {
     try {
-        const book = await Book.findOneAndDelete(req.params.id)
+        const book = await Book.findOneAndDelete({
+            _id: req.params.id,
+            userId: req.user.userId,
+        })
+
+        if(!book) {
+            return res.status(404).json({message: 'Book not found'})
+        }
 
         res.status(200).json({message: 'Book deleted successfully'})
 
@@ -144,10 +157,14 @@ exports.deleteBook = async (req, res) => {
 exports.updateBookRating = async (req, res) => {
     const book = await Book.findById(req.params.id)
 
-    const newRating = book.ratings.filter(rating => rating.userId !== req.body.userId)
+    if(!book) {
+        return res.status(404).json({message: 'Book not found'})
+    }
+
+    const newRating = book.ratings.filter(rating => rating.userId !== req.user.userId)
 
     newRating.push({
-        userId: req.body.userId,
+        userId: req.user.userId,
         grade: req.body.rating
     })
 

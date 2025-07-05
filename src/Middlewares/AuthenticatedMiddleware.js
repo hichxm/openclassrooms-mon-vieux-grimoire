@@ -15,6 +15,8 @@ exports.authenticated = async (req, res, next) => {
         const validate = await validateJWT(bearerToken);
 
         if(validate) {
+            req.user = validate;
+
             return next();
         } else {
             throw new Error('Unauthorized')
