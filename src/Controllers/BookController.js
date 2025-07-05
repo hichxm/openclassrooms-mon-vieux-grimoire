@@ -140,3 +140,27 @@ exports.deleteBook = async (req, res) => {
         res.status(400).json({message: 'Failed to delete book'})
     }
 }
+
+exports.updateBookRating = async (req, res) => {
+    const book = await Book.findById(req.params.id)
+
+    const newRating = book.ratings.filter(rating => rating.userId !== req.body.userId)
+
+    newRating.push({
+        userId: req.body.userId,
+        grade: req.body.rating
+    })
+
+    book.ratings = newRating
+    book.averageRating = calculateAverageRating(newRating)
+
+    try {
+        await book.save()
+
+        res.status(200).json(book)
+    } catch (error) {
+        console.error(error)
+
+        res.status(400).json({message: 'Failed to update rating'})
+    }
+}

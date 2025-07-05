@@ -45,10 +45,12 @@ router.get('/books', BookController.getBooks)
 router.get('/books/bestrating', BookController.getBooksBestRating)
 router.get('/books/:id', BookController.getBook)
 
-router.use(['/books', '/books/:id'], AuthenticatedMiddleware.authenticated)
+router.use(['/books', '/books/:id', '/books/:id/rating'], AuthenticatedMiddleware.authenticated)
 
 router.post('/books', upload.single('image'), BookController.storeBook)
 router.put('/books/:id', upload.single('image'), BookController.updateBook)
 router.delete('/books/:id', BookController.deleteBook)
+
+router.post('/books/:id/rating', BookController.updateBookRating)
 
 module.exports = router;
