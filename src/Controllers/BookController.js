@@ -1,7 +1,8 @@
 const Book = require('./../Schemas/Book')
 const path = require('path');
-const {imagesBookPath} = require("../helper");
+const {imagesBookPath, publicImagesBookURL, publicPath} = require("../helper");
 const sharp = require('sharp');
+const fs = require("node:fs");
 
 const convertImageToJPEG = async (imagePath) => {
     const basenameImagePath = path.basename(imagePath)
@@ -70,33 +71,58 @@ exports.storeBook = async (req, res) => {
 }
 
 exports.updateBook = async (req, res) => {
+    const deleteImage = (path) => {
+        try {
+            if(fs.existsSync(path)) {
+                fs.unlinkSync(path)
+            }
+        } catch (error) {
+            console.error(error)
+
+            return false;
+        }
+
+        return true;
+    }
+
     // const userIdFromToken = ;
     const book = await Book.findById(req.params.id)
 
-    let imageLocalPath = book.imageLocalPath;
-    let reqBookParsed = {};
+    let imageLocalPath = book.imageLocalPath
+    let reqBookParsed = {}
 
     if(req.file) {
         imageLocalPath = await convertImageToJPEG(req.file.path)
 
-        reqBookParsed = req.body.book
+        reqBookParsed = JSON.parse(req.body.book)
     } else {
         reqBookParsed = req.body
     }
 
-    book.title = reqBookParsed.title;
-    book.author = reqBookParsed.author;
-    book.imageLocalPath = imageLocalPath;
-    book.year = reqBookParsed.year;
-    book.genre = reqBookParsed.genre;
+    const oldImageLocalPath = book.imageLocalPath
+
+    book.title = reqBookParsed.title
+    book.author = reqBookParsed.author
+    book.imageLocalPath = imageLocalPath
+    book.year = reqBookParsed.year
+    book.genre = reqBookParsed.genre
 
     try {
         await book.save()
 
         res.status(201).json({message: 'Book updated successfully'})
+
+        // Delete old image
+        if(book.imageLocalPath !== oldImageLocalPath) {
+            deleteImage(publicPath('images/', 'books/', oldImageLocalPath))
+        }
     } catch (error) {
         console.error(error)
 
         res.status(400).json({message: 'Failed to update book'})
+
+        if(book.imageLocalPath !== oldImageLocalPath) {
+            deleteImage(publicPath('images/', 'books/', oldImageLocalPath))
+        }
     }
 }
