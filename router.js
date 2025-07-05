@@ -49,5 +49,6 @@ router.use(['/books', '/books/:id'], AuthenticatedMiddleware.authenticated)
 
 router.post('/books', upload.single('image'), BookController.storeBook)
 router.put('/books/:id', upload.single('image'), BookController.updateBook)
+router.delete('/books/:id', BookController.deleteBook)
 
 module.exports = router;

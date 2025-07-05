@@ -4,6 +4,20 @@ const {imagesBookPath, publicImagesBookURL, publicPath} = require("../helper");
 const sharp = require('sharp');
 const fs = require("node:fs");
 
+const deleteImage = (path) => {
+    try {
+        if(fs.existsSync(path)) {
+            fs.unlinkSync(path)
+        }
+    } catch (error) {
+        console.error(error)
+
+        return false;
+    }
+
+    return true;
+}
+
 const convertImageToJPEG = async (imagePath) => {
     const basenameImagePath = path.basename(imagePath)
     const extensionImagePath = path.extname(imagePath)
@@ -71,20 +85,6 @@ exports.storeBook = async (req, res) => {
 }
 
 exports.updateBook = async (req, res) => {
-    const deleteImage = (path) => {
-        try {
-            if(fs.existsSync(path)) {
-                fs.unlinkSync(path)
-            }
-        } catch (error) {
-            console.error(error)
-
-            return false;
-        }
-
-        return true;
-    }
-
     // const userIdFromToken = ;
     const book = await Book.findById(req.params.id)
 
@@ -124,5 +124,19 @@ exports.updateBook = async (req, res) => {
         if(book.imageLocalPath !== oldImageLocalPath) {
             deleteImage(publicPath('images/', 'books/', oldImageLocalPath))
         }
+    }
+}
+
+exports.deleteBook = async (req, res) => {
+    try {
+        const book = await Book.findOneAndDelete(req.params.id)
+
+        res.status(200).json({message: 'Book deleted successfully'})
+
+        deleteImage(publicPath('images/', 'books/', book.imageLocalPath))
+    } catch (error) {
+        console.error(error)
+
+        res.status(400).json({message: 'Failed to delete book'})
     }
 }
