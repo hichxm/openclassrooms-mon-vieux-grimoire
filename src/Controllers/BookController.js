@@ -92,7 +92,7 @@ exports.updateBook = async (req, res) => {
     })
 
     if(!book) {
-        return res.status(404).json({message: 'Book not found'})
+        return res.status(403).json({message: 'Unauthorized'})
     }
 
     let imageLocalPath = book.imageLocalPath
@@ -142,7 +142,7 @@ exports.deleteBook = async (req, res) => {
         })
 
         if(!book) {
-            return res.status(404).json({message: 'Book not found'})
+            return res.status(403).json({message: 'Unauthorized'})
         }
 
         res.status(200).json({message: 'Book deleted successfully'})
