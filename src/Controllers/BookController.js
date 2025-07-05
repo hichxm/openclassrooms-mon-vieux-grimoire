@@ -19,6 +19,10 @@ const convertImageToJPEG = async (imagePath) => {
     return path.basename(publicImagePath);
 }
 
+const calculateAverageRating = (ratings) => {
+    return ratings.reduce((acc, rating) => acc + rating.grade, 0) / ratings.length;
+}
+
 exports.getBooks = async (req, res) => {
     const books = await Book.find()
 
@@ -32,7 +36,7 @@ exports.getBook = async (req, res) => {
 }
 
 exports.getBooksBestRating = async (req, res) => {
-    const books = await Book.find().sort({averageRating: -1}).limit(3)
+    const books = await Book.find().sort({averageRating: 'desc'}).limit(3)
 
     return res.status(200).json(books)
 }
@@ -62,5 +66,37 @@ exports.storeBook = async (req, res) => {
         console.error(error)
 
         res.status(400).json({message: 'Failed to create book'})
+    }
+}
+
+exports.updateBook = async (req, res) => {
+    // const userIdFromToken = ;
+    const book = await Book.findById(req.params.id)
+
+    let imageLocalPath = book.imageLocalPath;
+    let reqBookParsed = {};
+
+    if(req.file) {
+        imageLocalPath = await convertImageToJPEG(req.file.path)
+
+        reqBookParsed = req.body.book
+    } else {
+        reqBookParsed = req.body
+    }
+
+    book.title = reqBookParsed.title;
+    book.author = reqBookParsed.author;
+    book.imageLocalPath = imageLocalPath;
+    book.year = reqBookParsed.year;
+    book.genre = reqBookParsed.genre;
+
+    try {
+        await book.save()
+
+        res.status(201).json({message: 'Book updated successfully'})
+    } catch (error) {
+        console.error(error)
+
+        res.status(400).json({message: 'Failed to update book'})
     }
 }

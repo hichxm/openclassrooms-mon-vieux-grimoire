@@ -8,13 +8,15 @@ const path = require("node:path");
 const multer = require('multer');
 const crypto = require("crypto");
 const fs = require("node:fs");
+const AuthenticatedMiddleware = require("./src/Middlewares/AuthenticatedMiddleware");
+const CorsMiddleware = require("./src/Middlewares/CorsMiddleware");
 
 const multerStorage = multer.diskStorage({
     destination: function (req, file, cb) {
         const _tmpUploadsPath = tmpUploadsPath()
 
         // If the tmp upload path does not exist, create a directory
-        if(!fs.existsSync(_tmpUploadsPath))
+        if (!fs.existsSync(_tmpUploadsPath))
             fs.mkdirSync(_tmpUploadsPath)
 
         cb(null, _tmpUploadsPath)
@@ -34,6 +36,8 @@ const multerStorage = multer.diskStorage({
 
 const upload = multer({storage: multerStorage});
 
+router.use(CorsMiddleware.cors)
+
 router.post('/auth/signup', AuthController.createUser)
 router.post('/auth/login', AuthController.loginUser)
 
@@ -41,6 +45,9 @@ router.get('/books', BookController.getBooks)
 router.get('/books/bestrating', BookController.getBooksBestRating)
 router.get('/books/:id', BookController.getBook)
 
+router.use(['/books', '/books/:id'], AuthenticatedMiddleware.authenticated)
+
 router.post('/books', upload.single('image'), BookController.storeBook)
+router.put('/books/:id', upload.single('image'), BookController.updateBook)
 
 module.exports = router;

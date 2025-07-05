@@ -22,7 +22,7 @@ exports.createUser = async (req, res, next) => {
         console.error('Failed to create user');
         console.error(error);
 
-        return res.status(400).json({message: 'Failed to create user'});
+        return res.status(401).json({message: 'Failed to create user'});
     }
 }
 
