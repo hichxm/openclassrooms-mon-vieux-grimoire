@@ -1,6 +1,6 @@
 const Book = require('./../Schemas/Book')
 const path = require('path');
-const {imagesBookPath, publicImagesBookURL, publicPath} = require("../helper");
+const {imagesBookPath, publicPath} = require("../helper");
 const sharp = require('sharp');
 const fs = require("node:fs");
 
@@ -162,15 +162,15 @@ exports.updateBookRating = async (req, res) => {
         return res.status(404).json({error: 'Book not found'})
     }
 
-    const newRating = book.ratings.filter(rating => rating.userId !== req.user.userId)
+    const newRatings = book.ratings.filter(rating => rating.userId !== req.user.userId)
 
-    newRating.push({
+    newRatings.push({
         userId: req.user.userId,
         grade: req.body.rating
     })
 
-    book.ratings = newRating
-    book.averageRating = calculateAverageRating(newRating)
+    book.ratings = newRatings
+    book.averageRating = calculateAverageRating(newRatings)
 
     try {
         await book.save()
