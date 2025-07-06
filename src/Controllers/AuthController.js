@@ -15,14 +15,13 @@ exports.createUser = async (req, res, next) => {
     try {
         const user = await userSchema.save();
 
-        console.log(user);
+        console.log('User created ' + user.email)
 
         return res.status(201).json({message: 'User created successfully'});
     } catch (error) {
-        console.error('Failed to create user');
-        console.error(error);
+        console.log('Failed to create user ' + req.body.email);
 
-        return res.status(401).json({message: 'Failed to create user'});
+        return res.status(401).json(error);
     }
 }
 
@@ -37,11 +36,10 @@ exports.loginUser = async (req, res, next) => {
     if (user === null) {
         console.log('Bad email or password ' + req.body.email + ' : ' + req.body.password)
 
-        return res.status(401).json({message: 'Email ou mot de passe incorrect !'})
+        return res.status(401).json({error: 'Bad email or password'})
     }
 
-    console.log(user._id)
-    console.log(process.env.JWT_SECRET)
+    console.log('Login success ' + req.body.email)
 
     return res.status(200).json({
         userId: user._id,

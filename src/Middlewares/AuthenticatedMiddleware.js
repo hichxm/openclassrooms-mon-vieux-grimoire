@@ -18,10 +18,10 @@ exports.authenticated = async (req, res, next) => {
             req.user = validate;
 
             return next();
-        } else {
-            throw new Error('Unauthorized')
         }
+
+        throw new Error('Unauthorized')
     } catch (error) {
-        return res.status(401).json({message: 'Unauthorized'})
+        return res.status(401).json(error)
     }
 }

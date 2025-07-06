@@ -10,8 +10,6 @@ const deleteImage = (path) => {
             fs.unlinkSync(path)
         }
     } catch (error) {
-        console.error(error)
-
         return false;
     }
 
@@ -23,12 +21,12 @@ const convertImageToJPEG = async (imagePath) => {
     const extensionImagePath = path.extname(imagePath)
 
     const publicImagePath = imagesBookPath(
-        basenameImagePath.replace(extensionImagePath, '.jpeg')
+        basenameImagePath.replace(extensionImagePath, '.webp')
     );
 
     await sharp(imagePath)
         .withExif({})
-        .jpeg()
+        .webp()
         .toFile(publicImagePath)
 
     return path.basename(publicImagePath);
@@ -36,7 +34,7 @@ const convertImageToJPEG = async (imagePath) => {
 
 const calculateAverageRating = (ratings) => {
     return (ratings.reduce((acc, rating) => acc + rating.grade, 0) / ratings.length)
-        .toFixed(0)
+        .toFixed(1)
 }
 
 exports.getBooks = async (req, res) => {
@@ -47,6 +45,10 @@ exports.getBooks = async (req, res) => {
 
 exports.getBook = async (req, res) => {
     const book = await Book.findById(req.params.id)
+
+    if(!book) {
+        return res.status(404).json({error: 'Book not found'})
+    }
 
     return res.status(200).json(book)
 }
@@ -81,7 +83,7 @@ exports.storeBook = async (req, res) => {
     } catch (error) {
         console.error(error)
 
-        res.status(400).json({message: 'Failed to create book'})
+        res.status(400).json(error)
     }
 }
 
@@ -149,9 +151,7 @@ exports.deleteBook = async (req, res) => {
 
         deleteImage(publicPath('images/', 'books/', book.imageLocalPath))
     } catch (error) {
-        console.error(error)
-
-        res.status(400).json({message: 'Failed to delete book'})
+        res.status(400).json(error)
     }
 }
 
@@ -159,7 +159,7 @@ exports.updateBookRating = async (req, res) => {
     const book = await Book.findById(req.params.id)
 
     if(!book) {
-        return res.status(404).json({message: 'Book not found'})
+        return res.status(404).json({error: 'Book not found'})
     }
 
     const newRating = book.ratings.filter(rating => rating.userId !== req.user.userId)
@@ -177,8 +177,6 @@ exports.updateBookRating = async (req, res) => {
 
         res.status(200).json(book)
     } catch (error) {
-        console.error(error)
-
-        res.status(400).json({message: 'Failed to update rating'})
+        res.status(400).json(error)
     }
 }
