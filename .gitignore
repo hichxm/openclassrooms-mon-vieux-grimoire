@@ -2,6 +2,7 @@
 .env
 public/images/books/*.jpg
 public/images/books/*.jpeg
+public/images/books/*.webp
 tmp/
 !tmp/.gitkeep
 
